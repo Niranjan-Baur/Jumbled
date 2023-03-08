@@ -10,10 +10,7 @@ import com.example.jumbbled.MainActivity
 import com.example.jumbbled.data.MAX_NO_OF_WORDS
 import com.example.jumbbled.data.SCORE_INCREASE
 import com.example.jumbbled.data.allWords
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 
 class GameViewModel: ViewModel() {
 
@@ -24,17 +21,20 @@ class GameViewModel: ViewModel() {
 
     private lateinit var currentWord : String
     var lengthOfWord : MutableList<String> = mutableListOf()
-    private var usedWord : MutableSet<String> = mutableSetOf()
+
+    private var _usedWord : MutableSet<String> = mutableSetOf()
+    var usedWord : Set<String> = _usedWord
+
 
 
     private fun pickRandomWordAndShuffle(): String {
         lengthOfWord.shuffle()
         currentWord = lengthOfWord.random()
         Log.d("CurrentWord",currentWord)
-        if(usedWord.contains(currentWord)){
+        if(_usedWord.contains(currentWord)){
             return pickRandomWordAndShuffle()
         }else{
-            usedWord.add(currentWord)
+            _usedWord.add(currentWord)
             return shuffleCurrentWord(currentWord)
         }
     }
@@ -51,8 +51,8 @@ class GameViewModel: ViewModel() {
     }
 
     fun  resetGame(){
-        usedWord.clear()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        _usedWord.clear()
+        _uiState.value = GameUiState(currentScrambledWord = "", isGuessedWordWrong = false, currentWordCount = 0, score = 0, isGameOver = false, isGameStart = false)
         updateUserGuess("")
     }
 
@@ -75,7 +75,7 @@ class GameViewModel: ViewModel() {
 
     private fun updateGameState(updatedScore: Int) {
 
-        if (usedWord.size == MAX_NO_OF_WORDS){
+        if (_usedWord.size == MAX_NO_OF_WORDS){
             //Last round in the game, update isGameOver to true, don't pick a new word
             _uiState.update { currentState ->
                 currentState.copy(
@@ -108,19 +108,20 @@ class GameViewModel: ViewModel() {
         lengthOfWord = allWords.filter { s -> s.length <= 5 } as MutableList<String>
 //        currentWord = lengthOfWord.random()
 //        pickRandomWordAndShuffle()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
+
 
 //        Log.d("from easyBtn", lengthOfWord.toString())
     }
     fun mediumBtnClicked(){
         lengthOfWord = allWords.filter { s -> s.length in  5..7} as MutableList<String>
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
 
 //        Log.d("from mediumBtn", lengthOfWord.toString())
     }
     fun hardBtnClicked(){
         lengthOfWord = allWords.filter { s -> s.length >= 8 } as MutableList<String>
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
 
 //        Log.d("from hardBtn", lengthOfWord.toString())
     }

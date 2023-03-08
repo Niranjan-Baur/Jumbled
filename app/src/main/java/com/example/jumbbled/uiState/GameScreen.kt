@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +31,9 @@ import com.example.jumbbled.ui.theme.JumbbledTheme
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.RequestConfiguration
+import kotlinx.coroutines.delay
+import java.util.Arrays
 
 
 @Composable
@@ -46,7 +51,7 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
     ) {
 
         BannersAds()
-        GameStatus(wordCount = gameUiState.currentWordCount, score = gameUiState.score)
+        GameStatus(wordCount = gameUiState.currentWordCount, score = gameUiState.score, isGameStarted = gameUiState.isGameStart)
         CircleProgress()
         DifficultyOption()
         GameLayout(currentScrambledWord = gameUiState.currentScrambledWord,onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
@@ -99,25 +104,53 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
 }
 
 @Composable
-fun GameStatus(wordCount: Int, score: Int,modifier: Modifier = Modifier) {
+fun GameStatus(wordCount: Int, isGameStarted: Boolean ,score: Int,modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .size(48.dp),
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = stringResource(R.string.word_count, wordCount),
             fontSize = 18.sp,
         )
+
+        if (isGameStarted) Timer()
+        
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.End),
+            modifier = Modifier,
             text = stringResource(R.string.score, score),
             fontSize = 18.sp,
         )
     }
+}
+
+@Composable
+fun Timer(){
+    var time by rememberSaveable() { mutableStateOf(0) }
+    
+    LaunchedEffect(true){
+        while (true){
+            delay(1000)
+            time++
+            Log.d("Timer", time.toString())
+        }
+    }
+
+    val min = time / 60
+    val sec = time % 60
+
+    Column(modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Text(modifier = Modifier.fillMaxHeight(),
+            textAlign = TextAlign.Justify,
+            fontSize = 18.sp,
+            text = "${"%02d".format(min)}:${"%02d".format(sec)}")
+
+    }
+
 }
 
 @Composable
@@ -132,7 +165,7 @@ fun GameLayout(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
             fontSize = 45.sp,
             modifier = modifier.align(Alignment.CenterHorizontally)
         )
-        if (gameViewModel.lengthOfWord.size == 0){
+        if (gameViewModel.usedWord.isEmpty()){
             Text(
                 text = stringResource(R.string.emptyList),
                 fontSize = 23.sp,
@@ -148,7 +181,7 @@ fun GameLayout(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
         }
 
         OutlinedTextField(
-            value =userGuess ,
+            value = userGuess ,
             singleLine = true,
             isError = isGuessWrong,
             modifier = Modifier.fillMaxWidth(),
@@ -283,6 +316,7 @@ fun BannersAds() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .background(color = Color.White)
     ) {
 
@@ -298,10 +332,16 @@ fun BannersAds() {
                     // on below line specifying ad unit id
                     // currently added a test ad unit id.
                     // ca-app-pub-3940256099942544/6300978111
-                    adUnitId = R.string.ad_id_banner.toString()
+
+                    //  adUnitId = R.string.ad_id_banner.toString() // it's not work.
+
+                    adUnitId = "ca-app-pub-3940256099942544/6300978111"
+
                     // calling load ad to load our ad.
+                    RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("2E9BC8C03155B55E5286AE72E6003525"))
                     loadAd(AdRequest.Builder().build())
                 }
+
             }
         )
     }
