@@ -226,6 +226,7 @@ fun CircleProgress(gameViewModel: GameViewModel = viewModel()){
 fun DifficultyOption(modifier: Modifier = Modifier,gameViewModel: GameViewModel = viewModel()){
 //    val gameUiState by gameViewModel.uiState.collectAsState()
 
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
