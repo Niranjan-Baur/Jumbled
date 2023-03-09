@@ -26,9 +26,6 @@ class GameViewModel: ViewModel() {
 
     private var _usedWord : MutableSet<String> = mutableSetOf()
     var usedWord : Set<String> = _usedWord
-
-
-
     private fun pickRandomWordAndShuffle(): String {
         lengthOfWord.shuffle()
         currentWord = lengthOfWord.random()
