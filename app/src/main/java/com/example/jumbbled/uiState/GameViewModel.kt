@@ -107,20 +107,20 @@ class GameViewModel: ViewModel() {
         lengthOfWord = allWords.filter { s -> s.length <= 5 } as MutableList<String>
 //        currentWord = lengthOfWord.random()
 //        pickRandomWordAndShuffle()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true, isMidBtnClicked = false, isHardBtnClicked = false)
 
 
 //        Log.d("from easyBtn", lengthOfWord.toString())
     }
     fun mediumBtnClicked(){
         lengthOfWord = allWords.filter { s -> s.length in  5..7} as MutableList<String>
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true, isEasyBtnClicked = false, isHardBtnClicked = false)
 
 //        Log.d("from mediumBtn", lengthOfWord.toString())
     }
     fun hardBtnClicked(){
         lengthOfWord = allWords.filter { s -> s.length >= 8 } as MutableList<String>
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true)
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle(), isGameStart = true,isEasyBtnClicked = false,isMidBtnClicked = false)
 
 //        Log.d("from hardBtn", lengthOfWord.toString())
     }

@@ -6,5 +6,8 @@ data class GameUiState(
     val currentWordCount: Int = 0,
     val score: Int = 0,
     val isGameOver : Boolean = false,
-    val isGameStart : Boolean = false
+    val isGameStart : Boolean = false,
+    val isEasyBtnClicked : Boolean = true,
+    val isMidBtnClicked : Boolean = true,
+    val isHardBtnClicked : Boolean = true
 )

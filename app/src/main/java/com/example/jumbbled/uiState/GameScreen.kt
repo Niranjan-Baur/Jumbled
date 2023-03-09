@@ -55,7 +55,10 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
         CircleProgress()
         DifficultyOption()
         GameLayout(currentScrambledWord = gameUiState.currentScrambledWord,onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
-            onKeyboardDone = { gameViewModel.checkUserGuess() },userGuess = gameViewModel.userGuess, isGuessWrong = gameUiState.isGuessedWordWrong)
+            onKeyboardDone = { if(gameViewModel.usedWord.isNotEmpty()){
+                gameViewModel.checkUserGuess()
+            }
+                             },userGuess = gameViewModel.userGuess, isGuessWrong = gameUiState.isGuessedWordWrong)
 
         Row(
             modifier = modifier
@@ -65,7 +68,7 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
         ) {
             OutlinedButton(
                 onClick = {
-                    if (gameViewModel.lengthOfWord.isNotEmpty()){
+                    if (gameViewModel.usedWord.isNotEmpty()){
                         gameViewModel.skipWord()
                     }
                 },
@@ -165,12 +168,12 @@ fun GameLayout(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
             fontSize = 45.sp,
             modifier = modifier.align(Alignment.CenterHorizontally)
         )
+
         if (gameViewModel.usedWord.isEmpty()){
             Text(
-                text = stringResource(R.string.emptyList),
-                fontSize = 23.sp,
+                text = stringResource(R.string.wordAppear),
+                fontSize = 20.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontWeight = FontWeight.Bold
             )
         }else{
             Text(
@@ -224,8 +227,15 @@ fun CircleProgress(gameViewModel: GameViewModel = viewModel()){
 
 @Composable
 fun DifficultyOption(modifier: Modifier = Modifier,gameViewModel: GameViewModel = viewModel()){
-//    val gameUiState by gameViewModel.uiState.collectAsState()
+    val gameUiState by gameViewModel.uiState.collectAsState()
 
+
+    if(gameViewModel.usedWord.isEmpty()){
+        Row(modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround) {
+            Text(text = stringResource(id = R.string.chooseLevel), fontSize = 20.sp)
+        }
+    }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -235,19 +245,19 @@ fun DifficultyOption(modifier: Modifier = Modifier,gameViewModel: GameViewModel 
             gameViewModel.easyBtnClicked()
         }, colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFF82CD47)
-        )) {
+        ), enabled = gameUiState.isEasyBtnClicked) {
             Text(text = stringResource(id = R.string.easy))
         }
 
         Button(onClick = { gameViewModel.mediumBtnClicked() }, colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFFFFC93C)
-        )) {
+        ),enabled = gameUiState.isMidBtnClicked) {
             Text(text = stringResource(id = R.string.medium))
         }
 
         Button(onClick = { gameViewModel.hardBtnClicked()},colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFFFF4A4A)
-        )) {
+        ),enabled = gameUiState.isHardBtnClicked) {
             Text(text = stringResource(id = R.string.hard))
         }
     }
@@ -317,7 +327,6 @@ fun BannersAds() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
             .background(color = Color.White)
     ) {
 
