@@ -19,6 +19,8 @@ class GameViewModel: ViewModel() {
 
     var userGuess by mutableStateOf("")
 
+
+
     private lateinit var currentWord : String
     var lengthOfWord : MutableList<String> = mutableListOf()
 
