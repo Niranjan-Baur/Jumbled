@@ -45,6 +45,7 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
+
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
