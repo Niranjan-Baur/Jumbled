@@ -45,7 +45,6 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -58,8 +57,7 @@ fun GameScreen(modifier: Modifier = Modifier,gameViewModel: GameViewModel = view
         GameLayout(currentScrambledWord = gameUiState.currentScrambledWord,onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
             onKeyboardDone = { if(gameViewModel.usedWord.isNotEmpty()){
                 gameViewModel.checkUserGuess()
-            }
-                             },userGuess = gameViewModel.userGuess, isGuessWrong = gameUiState.isGuessedWordWrong)
+            }},userGuess = gameViewModel.userGuess, isGuessWrong = gameUiState.isGuessedWordWrong)
 
         Row(
             modifier = modifier
