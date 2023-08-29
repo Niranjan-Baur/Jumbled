@@ -2,7 +2,7 @@
 **Jumbbled** is a game where a player is presented with a set of scrambled letters and must unscramble them to form a valid word. The game is usually played by one person. Jumble games are often used as a fun way to improve vocabulary, spelling, and problem-solving skills.
 
 ## How does it work ?
-Jumbled has tons of words about 3000 words. 
+Jumbled has tons of words about 3000+ words. 
 
 Way to play this game --
 1) First a player needs to select a difficulty-level option between Easy, Medium, or Hard. By clicking the level button, `random` words will appear one by one out of 10 and a timer will start.
